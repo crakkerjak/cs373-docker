@@ -1,0 +1,26 @@
+# install docker toolbox
+# open a docker quickstart terminal
+# activate virtual environment (if you're using one)
+# cd into cluster directory
+
+source docker.env
+cd ..
+make docker-build && make docker-push
+
+# check build status (cntl-c to exit):
+docker-compose logs
+
+# to check container status, get container id from:
+docker ps -a
+# and check it's logs with:
+docker logs <container_id>
+
+# run a manager command (init_db, at least is a must):
+# manager commands: init_db, load_pickled_data, drop_db
+docker-compose -f docker-compose-prod.yml run -d --rm --no-deps app python3 idb.py <command>
+
+# get the external ip:
+docker port idb_lb 80
+
+# shortcut
+make docker-build && make docker-push && docker-compose logs
