@@ -3,12 +3,17 @@
 # activate virtual environment (if you're using one)
 # cd into cluster directory
 
-source docker.env
-cd ..
+source <cluster_dir>/docker.env
+# optional - view docker's environment variables:
+env | grep DOCKER
+# build and push
 make docker-build && make docker-push
 
 # check build status (cntl-c to exit):
 docker-compose logs
+
+# shortcut:
+make docker-build && make docker-push && docker-compose logs
 
 # to check container status, get container id from:
 docker ps -a
@@ -22,5 +27,30 @@ docker-compose -f docker-compose-prod.yml run -d --rm --no-deps app python3 idb.
 # get the external ip:
 docker port idb_lb 80
 
-# shortcut
-make docker-build && make docker-push && docker-compose logs
+# create a new vm to run a seperate instance of the app:
+docker-machine create --driver virtualbox <machine_name>
+
+# to work locally with the vm:
+eval $(docker-machine env <machine_name>)
+
+# to push to remote ip (cluster):
+source <cluster_dir>/docker.env
+make docker-build && make docker-push
+docker port idb_lb 80
+
+# list machines:
+docker-machine ls
+# list containers:
+docker ps -a
+# list images:
+docker images
+
+# remove:
+docker-machine rm <machine_name>
+docker rm <container_id>
+docker rmi <image_name>
+
+# remove dangling images:
+docker rmi $(docker images -qf "dangling=true")
+# remove exited containers:
+docker ps -a | grep Exit | cut -d ' ' -f 1 | xargs docker rm

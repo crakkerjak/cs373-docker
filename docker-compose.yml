@@ -43,8 +43,8 @@ services:
       # We don't care about commiting these creds to GitHub because they're only
       # for our local development environment
       - MYSQL_ROOT_PASSWORD=idb_root_pw
-      - MYSQL_USER=idb_admin
-      - MYSQL_PASSWORD=idb_admin_pw
+      - MYSQL_USER=idbadmin
+      - MYSQL_PASSWORD=idbadmin_pw
     volumes_from:
       # Mount the volumes from the data container to store our MySQL files
       - data
